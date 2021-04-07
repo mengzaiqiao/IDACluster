@@ -1,0 +1,77 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  name: pythonmlnotebookgpudenseqe
+  namespace: 2377898wproject
+spec:
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 600
+      maxUnavailable: 25%
+      maxSurge: 25%
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ConfigChange
+  replicas: 1
+  revisionHistoryLimit: 10
+  test: false
+  selector:
+    app: pythonMLNotebook
+    deploymentconfig: pythonMLNotebookGPU
+    group: 2377898w
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: pythonMLNotebook
+        deploymentconfig: pythonMLNotebookGPU
+        group: 2377898w
+    spec:
+      nodeSelector:
+        node-role.ida/gpu2080ti: 'true'
+      restartPolicy: Always
+      serviceAccountName: containerroot
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources:
+            limits:
+              cpu: '4'
+              memory: 240Gi
+              nvidia.com/gpu: '1'
+            requests:
+              cpu: '2'
+              memory: 200Gi
+              nvidia.com/gpu: '1'
+          terminationMessagePath: /dev/termination-log
+          name: deepo-ml-plus
+          command:
+            - jupyter
+          ports:
+            - containerPort: 8888
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: nfs-access
+              mountPath: /nfs/
+          terminationMessagePolicy: File
+          image: jxcodetw/jupyter-pytorch
+          args:
+            - notebook
+            - '--no-browser'
+            - '--ip=0.0.0.0'
+            - '--allow-root'
+            - '--NotebookApp.token=colbert'
+            - '--notebook-dir="/nfs/"'
+      serviceAccount: containerroot
+      volumes:
+        - name: nfs-access
+          persistentVolumeClaim:
+            claimName: 2377898wvol1claim
+      dnsPolicy: ClusterFirst
+

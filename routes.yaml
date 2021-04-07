@@ -1,0 +1,16 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: jupyterroutedenseqe
+  namespace: 2377898wproject
+spec:
+  path: /
+  to:
+    kind: Service
+    name: jupyterservice
+  port:
+    targetPort: 8888
+
+
+
+
