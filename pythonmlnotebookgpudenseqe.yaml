@@ -1,0 +1,93 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  name: pythonmlnotebookgpudenseqe
+  namespace: 2377898wproject
+  selfLink: >-
+    /apis/apps.openshift.io/v1/namespaces/2377898wproject/deploymentconfigs/pythonmlnotebookgpudenseqe
+  uid: 68ec12ba-97bb-11eb-be98-ac1f6bba3f6e
+  resourceVersion: '133003690'
+  generation: 7
+  creationTimestamp: '2021-04-07T16:07:53Z'
+spec:
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 600
+      maxUnavailable: 25%
+      maxSurge: 25%
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ConfigChange
+  replicas: 1
+  revisionHistoryLimit: 10
+  test: false
+  selector:
+    app: pythonMLNotebook
+    deploymentconfig: pythonMLNotebookGPU
+    group: 2377898w
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: pythonMLNotebook
+        deploymentconfig: pythonMLNotebookGPU
+        group: 2377898w
+    spec:
+      nodeSelector:
+        node-role.ida/gpu2080ti: 'true'
+      restartPolicy: Always
+      serviceAccountName: containerroot
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources:
+            limits:
+              cpu: '4'
+              memory: 240Gi
+              nvidia.com/gpu: '1'
+            requests:
+              cpu: '2'
+              memory: 200Gi
+              nvidia.com/gpu: '1'
+          terminationMessagePath: /dev/termination-log
+          name: deepo-ml-plus
+          command:
+            - jupyter
+          ports:
+            - containerPort: 8888
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: indices
+              mountPath: /nfs/indices/
+            - name: xiao
+              mountPath: /nfs/xiao/
+            - name: craigm
+              mountPath: /nfs/craigm/
+          terminationMessagePolicy: File
+          image: jxcodetw/jupyter-pytorch
+          args:
+            - notebook
+            - '--no-browser'
+            - '--ip=0.0.0.0'
+            - '--allow-root'
+            - '--NotebookApp.token=colbert'
+            - '--notebook-dir="/nfs/"'
+      serviceAccount: containerroot
+      volumes:
+        - name: indices
+          persistentVolumeClaim:
+            claimName: 2377898wvol2indicesclaim
+        - name: xiao
+          persistentVolumeClaim:
+            claimName: 2377898wvol1claim
+        - name: craigm
+          persistentVolumeClaim:
+            claimName: craigmvol1claim
+      dnsPolicy: ClusterFirst
+
