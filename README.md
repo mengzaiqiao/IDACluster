@@ -5,3 +5,6 @@
 ## avaliable image 
 - jxcodetw/jupyter-pytorch
 - inferislux/zaiqiao-ml:latest
+
+## In denseqe yaml file
+you can find how to mount on multiple volclaim.
