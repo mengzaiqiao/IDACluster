@@ -1,0 +1,12 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: jupyterroute3
+  namespace: 2377898wproject
+spec:
+  path: /
+  to:
+    kind: Service
+    name: jupyterservice3
+  port:
+    targetPort: 8888
