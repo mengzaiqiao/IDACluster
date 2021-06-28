@@ -17,13 +17,13 @@ specify the node type in the yaml file, e.g. `nodeselector: node-role.ida/gpu208
 ## How to Use:
 - basic yaml file for requesting a gpu node
 
- need files: pythonmlnotebookgpu.yaml & routes.yaml & service.yaml
+Needed files: pythonmlnotebookgpu.yaml & routes.yaml & service.yaml
  
 
 - If you need to mount on multiple volclaim
 
-need files: pythonmlnotebookgpudenseqe.yaml & routes.yaml & service.yaml
+Needed files: pythonmlnotebookgpudenseqe.yaml & routes.yaml & service.yaml
 
 - If you need to request a second gpu node
 
-need files: pythonmlnotebook3.yaml & pythonmlnotebook3routes.yaml & pythonmlnotebook3service.yaml
+Needed files: pythonmlnotebook3.yaml & pythonmlnotebook3routes.yaml & pythonmlnotebook3service.yaml
