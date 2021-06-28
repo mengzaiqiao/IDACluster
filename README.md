@@ -6,5 +6,21 @@
 - jxcodetw/jupyter-pytorch
 - inferislux/zaiqiao-ml:latest
 
-## In denseqe yaml file
-you can find how to mount on multiple volclaim.
+## avaliable nodeselctor:
+Three types of node are avaliable:
+- gpu2080ti
+- gpu3090
+- gputitan
+
+specify the node type in the yaml file, e.g. `nodeselector: node-role.ida/gpu2080ti: 'true'
+
+## How to Use:
+- basic yaml file for requesting a gpu node
+ need files: pythonmlnotebookgpu.yaml & routes.yaml & service.yaml
+ 
+
+- If you need to mount on multiple volclaim
+need files: pythonmlnotebookgpudenseqe.yaml & routes.yaml & service.yaml
+
+- If you need to request a second gpu node
+need files: pythonmlnotebook3.yaml & pythonmlnotebook3routes.yaml & pythonmlnotebook3service.yaml
