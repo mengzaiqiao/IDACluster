@@ -22,12 +22,12 @@ spec:
         image: 'jxcodetw/jupyter-pytorch'
         resources:
           requests:
-            cpu: '4'
+            cpu: '2'
             memory: "200Gi"
             nvidia.com/gpu: 1
           limits:
-            cpu: "4"
-            memory: "240Gi"
+            cpu: "2"
+            memory: "140Gi"
             nvidia.com/gpu: 1
         command:
           - 'jupyter'
@@ -50,6 +50,8 @@ spec:
               mountPath: /nfs/craigm/
             - name: nicola
               mountPath: /nfs/nicola/
+            - name: sean
+              mountPath: /nfs/sean/
       securityContext: {}
       serviceAccount: containerroot
       volumes:
@@ -65,3 +67,6 @@ spec:
         - name: nicola
           persistentVolumeClaim:
             claimName: nicolavol1xiaoclaim
+        - name: sean
+          persistentVolumeClaim:
+            claimName: xiaotrecdlvol2claim
