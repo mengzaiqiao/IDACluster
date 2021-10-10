@@ -48,6 +48,8 @@ spec:
               mountPath: /nfs/xiao/
             - name: craigm
               mountPath: /nfs/craigm/
+            - name: nicola
+              mountPath: /nfs/nicola/
       securityContext: {}
       serviceAccount: containerroot
       volumes:
@@ -60,3 +62,6 @@ spec:
         - name: craigm
           persistentVolumeClaim:
             claimName: craigmvol1claim
+        - name: nicola
+          persistentVolumeClaim:
+            claimName: nicolavol1xiaoclaim
