@@ -1,0 +1,92 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: pythonMLNotebook7
+  namespace: 2377898wproject
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: pythonMLNotebook7
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: pythonMLNotebook7
+    spec:
+      containers:
+        - args:
+            - notebook
+            - '--no-browser'
+            - '--ip=0.0.0.0'
+            - '--allow-root'
+            - '--NotebookApp.token=colbert'
+            - '--notebook-dir="/nfs/"'
+          command:
+            - jupyter
+          image: 'jxcodetw/jupyter-pytorch'
+          imagePullPolicy: Always
+          name: deepo-ml-plus
+          ports:
+            - containerPort: 8899
+              protocol: TCP
+          resources:
+            limits:
+              cpu: '2'
+              memory: 150Gi
+              nvidia.com/gpu: 1
+            requests:
+              cpu: '2'
+              memory: 150Gi
+              nvidia.com/gpu: 1
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - name: indices
+              mountPath: /nfs/indices/
+            - name: xiao
+              mountPath: /nfs/xiao/
+            - name: craigm
+              mountPath: /nfs/craigm/
+            - name: nicola
+              mountPath: /nfs/nicola/
+            - name: sean
+              mountPath: /nfs/sean/
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        node-role.ida/gpua6000: 'true'
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: containerroot
+      serviceAccountName: containerroot
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: indices
+          persistentVolumeClaim:
+            claimName: 2377898wvol2indicesclaim
+        - name: xiao
+          persistentVolumeClaim:
+            claimName: 2377898wvol1claim
+        - name: craigm
+          persistentVolumeClaim:
+            claimName: craigmvol1claim
+        - name: nicola
+          persistentVolumeClaim:
+            claimName: nicolavol1xiaoclaim
+        - name: sean
+          persistentVolumeClaim:
+            claimName: xiaotrecdlvol2claim
+  test: false
+  triggers:
+    - type: ConfigChange
