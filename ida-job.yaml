@@ -3,26 +3,16 @@ apiVersion: batch/v1
 metadata:
   name: pythonmlnotebook7
   namespace: 2377898wproject
-  labels:
-    app: pythonMLNotebook3
-    controller-uid: 6cfd61b2-5c63-11ec-be4e-ac1f6bba3f6e
-    deploymentconfig: pythonmlnotebook7
-    job-name: pythonmlnotebook7
 spec:
   parallelism: 1
   completions: 1
   backoffLimit: 6
-  selector:
-    matchLabels:
-      controller-uid: 6cfd61b2-5c63-11ec-be4e-ac1f6bba3f6e
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: pythonMLNotebook3
-        controller-uid: 6cfd61b2-5c63-11ec-be4e-ac1f6bba3f6e
+        app: pythonMLNotebook7
         deploymentconfig: pythonmlnotebook7
-        job-name: pythonmlnotebook7
     spec:
       volumes:
         - name: indices
@@ -63,7 +53,7 @@ spec:
                 - SETUID
             runAsUser: 1000870000
           ports:
-            - containerPort: 8888
+            - containerPort: 8899
               protocol: TCP
           imagePullPolicy: IfNotPresent
           volumeMounts:
