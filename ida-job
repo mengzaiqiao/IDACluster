@@ -1,0 +1,99 @@
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: pythonmlnotebook7
+  namespace: 2377898wproject
+  labels:
+    app: pythonMLNotebook3
+    controller-uid: 6cfd61b2-5c63-11ec-be4e-ac1f6bba3f6e
+    deploymentconfig: pythonmlnotebook7
+    job-name: pythonmlnotebook7
+spec:
+  parallelism: 1
+  completions: 1
+  backoffLimit: 6
+  selector:
+    matchLabels:
+      controller-uid: 6cfd61b2-5c63-11ec-be4e-ac1f6bba3f6e
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: pythonMLNotebook3
+        controller-uid: 6cfd61b2-5c63-11ec-be4e-ac1f6bba3f6e
+        deploymentconfig: pythonmlnotebook7
+        job-name: pythonmlnotebook7
+    spec:
+      volumes:
+        - name: indices
+          persistentVolumeClaim:
+            claimName: 2377898wvol2indicesclaim
+        - name: xiao
+          persistentVolumeClaim:
+            claimName: 2377898wvol1claim
+        - name: craigm
+          persistentVolumeClaim:
+            claimName: craigmvol1claim
+        - name: nicola
+          persistentVolumeClaim:
+            claimName: nicolavol1xiaoclaim
+        - name: sean
+          persistentVolumeClaim:
+            claimName: xiaotrecdlvol2claim
+      containers:
+        - resources:
+            limits:
+              cpu: '2'
+              memory: 100Gi
+              nvidia.com/gpu: '1'
+            requests:
+              cpu: '2'
+              memory: 100Gi
+              nvidia.com/gpu: '1'
+          terminationMessagePath: /dev/termination-log
+          name: lifbertcder
+          command:
+            - jupyter
+          securityContext:
+            capabilities:
+              drop:
+                - KILL
+                - MKNOD
+                - SETGID
+                - SETUID
+            runAsUser: 1000870000
+          ports:
+            - containerPort: 8888
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: indices
+              mountPath: /nfs/indices/
+            - name: xiao
+              mountPath: /nfs/xiao/
+            - name: craigm
+              mountPath: /nfs/craigm/
+            - name: nicola
+              mountPath: /nfs/nicola/
+            - name: sean
+              mountPath: /nfs/sean/
+          terminationMessagePolicy: File
+          image: 9meo/pytorch1.10-transformers4.2
+          args:
+            - notebook
+            - '--no-browser'
+            - '--ip=0.0.0.0'
+            - '--allow-root'
+            - '--NotebookApp.token=colbert'
+            - '--notebook-dir="/nfs/"'
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        node-role.ida/gpua6000: 'true'
+      securityContext:
+        seLinuxOptions:
+          level: 's0:c30,c0'
+        fsGroup: 1000870000
+      schedulerName: default-scheduler
+status: {}
