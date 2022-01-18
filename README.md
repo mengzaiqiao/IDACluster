@@ -11,6 +11,7 @@ Three types of node are avaliable:
 - gpu2080ti
 - gpu3090
 - gputitan
+- gpua6000
 
 specify the node type in the yaml file, e.g. `nodeselector: node-role.ida/gpu2080ti: 'true'
 
