@@ -1,0 +1,72 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: pythonmlnotebook4
+  namespace: 2377898wproject
+spec:
+  replicas: 1
+  strategy:
+    resources: {}
+  template:
+    metadata:
+      labels:
+        app: pythonMLNotebook4
+        deploymentconfig: pythonMLNotebookGPU4
+        group: 2377898w
+    spec:
+      nodeSelector:
+        node-role.ida/gpua6000: "true"
+        # node-role.ida/gpu2080ti: "true"
+      containers:
+      - name: deepo-ml-plus
+        image: 'jxcodetw/jupyter-pytorch'
+        resources:
+          requests:
+            cpu: '2'
+            memory: "100Gi"
+            nvidia.com/gpu: 1
+          limits:
+            cpu: "2"
+            memory: "100Gi"
+            nvidia.com/gpu: 1
+        command:
+          - 'jupyter'
+        args:
+          - 'notebook'
+          - '--no-browser'
+          - '--ip=0.0.0.0'
+          - '--allow-root'
+          - '--NotebookApp.token=colbert'
+          - '--notebook-dir="/nfs/"'
+        ports:
+          - containerPort: 8899
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+            - name: indices
+              mountPath: /nfs/indices/
+            - name: xiao
+              mountPath: /nfs/xiao/
+            - name: craigm
+              mountPath: /nfs/craigm/
+            - name: nicola
+              mountPath: /nfs/nicola/
+            - name: sean
+              mountPath: /nfs/sean/
+      securityContext: {}
+      serviceAccount: containerroot
+      volumes:
+        - name: indices
+          persistentVolumeClaim:
+            claimName: 2377898wvol2indicesclaim
+        - name: xiao
+          persistentVolumeClaim:
+            claimName: 2377898wvol1claim
+        - name: craigm
+          persistentVolumeClaim:
+            claimName: craigmvol1claim
+        - name: nicola
+          persistentVolumeClaim:
+            claimName: nicolavol1xiaoclaim
+        - name: sean
+          persistentVolumeClaim:
+            claimName: xiaotrecdlvol2claim
