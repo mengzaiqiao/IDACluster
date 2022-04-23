@@ -1,0 +1,76 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  name: protbertjupyter
+  namespace: zaiqiaoproject
+  resourceVersion: '232072782'
+  generation: 4
+  creationTimestamp: '2022-04-18T17:19:43Z'
+spec:
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 600
+      maxUnavailable: 25%
+      maxSurge: 25%
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ConfigChange
+  replicas: 1
+  revisionHistoryLimit: 10
+  test: false
+  selector:
+    app: protbertjupyter
+    deploymentconfig: protbertjupyter-dc
+    group: zaiqiao
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: protbertjupyter
+        deploymentconfig: protbertjupyter-dc
+        group: zaiqiao
+    spec:
+      restartPolicy: Always
+      serviceAccountName: containerroot
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources:
+            limits:
+              cpu: '4'
+              memory: 128Gi
+            requests:
+              cpu: '2'
+              memory: 64Gi
+          terminationMessagePath: /dev/termination-log
+          name: test
+          command:
+            - jupyter
+          ports:
+            - containerPort: 8888
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: nfs-access
+              mountPath: /nfs/
+          terminationMessagePolicy: File
+          image: 'docker-registry.default.svc:5000/zaiqiaoproject/protbert'
+          args:
+            - lab
+            - '--no-browser'
+            - '--ip=0.0.0.0'
+            - '--allow-root'
+            - '--port=8888'
+            - '--NotebookApp.token="20121221"'
+            - '--notebook-dir="/nfs/"'
+      serviceAccount: containerroot
+      volumes:
+        - name: nfs-access
+          persistentVolumeClaim:
+            claimName: zaiqiaovol1claim
+      dnsPolicy: ClusterFirst
